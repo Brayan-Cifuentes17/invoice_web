@@ -73,12 +73,24 @@
               @click="selectCustomer(customer)"
             >
               ID: {{ customer.ID_PERSONA }} - Nombre: {{ customer.NOMBRES }} {{
-              customer.APELLIDOS }}
+              customer.APELLIDOS }}-CONTACTO:{{ customer.TELEFONO}}
             </li>
           </ul>
 
           <label for="customerName">Nombre del Cliente:</label>
           <input type="text" v-model="customerName" disabled />
+
+          <label for="id_customer">Documento:</label>
+          <input type="text" v-model="id_customer" disabled />
+
+          <label for="customerAddress">Dirección del Cliente:</label>
+          <input type="text" v-model="address" disabled />
+
+          <label for="customerEmail">Email del Cliente:</label>
+          <input type="email" v-model="email" disabled />
+
+          <label for="customerPhone">Teléfono del Cliente:</label>
+          <input type="text" v-model="phone" disabled />
 
           <label for="date">Fecha de Venta:</label>
           <input type="date" v-model="date" required />
@@ -142,6 +154,7 @@
 
         <div>
           <h3>Subtotal: {{ subtotal }}</h3>
+          <h3>IVA: {{ iva }}</h3>
           <h3>Total a Pagar: {{ total }}</h3>
 
           <label for="paymentMethod">Método de Pago:</label>
@@ -170,13 +183,16 @@
       </form>
 
       <!-- Mensaje cuando se genera la factura -->
-      <div v-if="invoiceGenerated">
-        <h2>Factura Generada</h2>
-        <p>La factura ha sido generada exitosamente.</p>
-      </div>
 
       <!-- Sección para mostrar facturas existentes -->
       <h2>Facturas Existentes</h2>
+      <label for="invoiceSearch">Buscar Factura por ID:</label>
+      <input
+        type="text"
+        v-model="invoiceSearch"
+        placeholder="Escriba el ID de la factura..."
+      />
+
       <table>
         <thead>
           <tr>
@@ -187,11 +203,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="invoice in invoices" :key="invoice.ID_FACTURA">
+          <tr v-for="invoice in filteredInvoices" :key="invoice.ID_FACTURA">
             <td>{{ invoice.ID_FACTURA }}</td>
             <td>{{ invoice.ID_CLIENTE }}</td>
             <td>{{ formatDate(invoice.FECHA) }}</td>
             <td>
+              <button @click="viewInvoice(invoice)">Ver</button>
               <button @click="editInvoice(invoice)">Editar</button>
               <button @click="deleteInvoice(invoice.ID_FACTURA)">
                 Eliminar
@@ -201,6 +218,50 @@
         </tbody>
       </table>
 
+      <div v-if="viewingInvoice">
+        <h2>Detalles de la Factura</h2>
+        <p><strong>ID Factura:</strong> {{ viewingInvoice.ID_FACTURA }}</p>
+        <p>
+          <strong>Cliente:</strong> {{ viewingInvoice.NOMBRES }} {{
+          viewingInvoice.APELLIDOS }}
+        </p>
+        <p><strong>Dirección:</strong> {{ viewingInvoice.DIRECCION }}</p>
+        <p><strong>Email:</strong> {{ viewingInvoice.CORREO }}</p>
+        <p><strong>Teléfono:</strong> {{ viewingInvoice.TELEFONO }}</p>
+        <p>
+          <strong>Fecha de Venta:</strong> {{ formatDate(viewingInvoice.FECHA)
+          }}
+        </p>
+
+        <h3>Productos</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID Producto</th>
+              <th>Nombre Producto</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+              <th>IVA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="detalle in viewingInvoice.detalles"
+              :key="detalle.ID_PRODUCTO"
+            >
+              <td>{{ detalle.ID_PRODUCTO }}</td>
+              <td>{{ detalle.NOMBRE }}</td>
+              <td>{{ detalle.CANTIDAD }}</td>
+              <td>{{ detalle.SUB_TOTAL }}</td>
+              <td>{{ detalle.IVA }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Método de Pago:</strong> {{ viewingInvoice.METODO_PAGO }}</p>
+        <p><strong>Total a pagar:</strong> {{ viewingInvoice.TOTAL_PAGAR }}</p>
+      </div>
+
       <!-- Formulario para editar factura -->
       <div v-if="editingInvoice">
         <h2>Editar Factura</h2>
@@ -208,8 +269,11 @@
           <label for="editInvoiceNumber">Número de Factura:</label>
           <input type="text" v-model="editingInvoice.ID_FACTURA" disabled />
 
-          <label for="editCustomerName">Nombre del Cliente:</label>
+          <label for="editCustomerName">Id del Cliente:</label>
           <input type="text" v-model="editingInvoice.CLIENTE" required />
+
+          <label for="editEmployeeName">Id del Empleado:</label>
+          <input type="text" v-model="editingInvoice.EMLEADO" required />
 
           <label for="editDate">Fecha:</label>
           <input type="date" v-model="editingInvoice.FECHA" required />
@@ -220,5 +284,4 @@
 
     <script src="client.js"></script>
   </body>
-</html> 
- 
+</html>

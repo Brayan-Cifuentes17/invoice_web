@@ -40,7 +40,7 @@ app.get('/employees', async (req, res) => {
 
 app.get('/customers', async (req, res) => {
     try {
-        connection.query('SELECT U.TIPO,P.ID_PERSONA, P.NOMBRES, P.APELLIDOS FROM USUARIO U JOIN PERSONA P ON U.id_PERSONA = P.id_persona WHERE U.TIPO="CLI";', (err, results) => {
+        connection.query('SELECT U.TIPO,P.* FROM USUARIO U JOIN PERSONA P ON U.id_PERSONA = P.id_persona WHERE U.TIPO="CLI";', (err, results) => {
             if (err) {
                 return res.status(500).json({ error: err.message });
             }
@@ -66,6 +66,7 @@ app.get('/invoices', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener facturas' });
     }
 });
+
 app.post('/createInvoices', async (req, res) => {
     console.log('Datos recibidos:', req.body);
     const { invoiceNumber, id_customer, date, items, subtotal,paymentMethod, employee } = req.body;
@@ -103,9 +104,32 @@ app.post('/createInvoices', async (req, res) => {
         res.status(500).json({ error: 'Error al crear la factura' });
     }
 });
+//ver factura
+app.get('/viewInvoice/:id', async (req, res) => {
+    const { id } = req.params;
+    console.log(id)
+    const query = `
+  SELECT F.*, P.*,D.ID_PRODUCTO, PR.NOMBRE, D.CANTIDAD,D.SUB_TOTAL,D.IVA,D.TOTAL_PAGAR, D.METODO_PAGO 
+        FROM FACTURA F JOIN PERSONA P ON F.ID_CLIENTE=P.ID_PERSONA JOIN DETALLE_FACTURA D ON F.ID_FACTURA= D.ID_FACTURA JOIN PRODUCTO PR ON PR.ID_PRODUCTO= D.ID_PRODUCTO 
+        where d.id_factura=?
+    `;
+    
+    try {
+      connection.query(query, [id], (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res.json(result);
+        console.log(result)
+      });
+    } catch (error) {
+      console.error('Error al obtener la factura:', error);
+      res.status(500).send('Error al obtener la factura');
+    }
+});
 
 // Actualizar factura
-app.put('/invoices/:id', async (req, res) => {
+app.put('/update/:id', async (req, res) => {
     const invoiceId = req.params.id;
     const { invoiceNumber, customerName, date, items, paymentMethod } = req.body;
 
