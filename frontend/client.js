@@ -1,0 +1,251 @@
+const { createApp } = Vue;
+
+const port = "4000";
+const ip = "localhost";
+
+createApp({
+    data() {
+        return {
+            invoiceNumber: '',
+            customerName: '',
+            id_customer: '',   
+            email: '',
+            address: '',
+            date: '',
+            productSearch: '',
+            selectedProduct: null,
+            quantity: 1,
+            paymentMethod: '',
+            id_employee: '',
+            employees: [],
+            products: [],
+            items: [],
+            invoiceGenerated: false,
+            invoices: [], 
+            editingInvoice: null,       
+            documentType: '',      
+            gender: '',            
+            phone: '',
+            customerSearch: '', // Campo de búsqueda para los clientes
+            selectedCustomer: null, // Cliente seleccionado
+            customers: []
+
+        };
+    },
+    computed: {
+        filteredCustomers() {
+            return this.customers.filter(customer =>
+                customer.ID_PERSONA.toString().includes(this.customerSearch) // Filtra por ID
+            );
+        },
+
+        filteredProducts() {
+            return this.products.filter(product =>
+                product.NOMBRE.toLowerCase().includes(this.productSearch.toLowerCase())
+            );
+        },
+        subtotal() {
+            return this.items.reduce((sum, item) => sum + item.totalPrice, 0);
+        },
+        total() {
+            return this.items.reduce((sum, item) => (((sum + item.totalPrice)*0.19)+(sum + item.totalPrice)), 0);
+        }
+    },
+    methods: {
+        async fetchCustomers() {
+            try {
+                const response = await fetch(`http://${ip}:${port}/customers`);
+                if (!response.ok) {
+                    throw new Error("Error al obtener clientes");
+                }
+                this.customers = await response.json();
+            } catch (error) {
+                console.error('Error al obtener clientes:', error);
+            }
+        },
+    
+        selectCustomer(customer) {
+            this.customerName = customer.NOMBRES + " " + customer.APELLIDOS; // Mostrar nombre completo
+            this.id_customer = customer.ID_PERSONA; // Asigna el ID del cliente
+            this.selectedCustomer = customer; // Guarda el cliente seleccionado
+            this.customerSearch = ''; // Limpia el campo de búsqueda
+        },        
+        async fetchProducts() {
+            try {
+                const response = await fetch(`http://${ip}:${port}/products`);
+                if (!response.ok) {
+                    throw new Error("Error al obtener productos");
+                }
+                this.products = await response.json();
+            } catch (error) {
+                console.error('Error al obtener productos:', error);
+            }
+        },
+
+        async fetchEmployees() {
+            try {
+                const response = await fetch(`http://${ip}:${port}/employees`);
+                if (!response.ok) {
+                    throw new Error("Error al buscar empleados");
+                }
+                this.employees = await response.json();
+            } catch (error) {
+                console.error('Error al obtener empleados:', error);
+            }
+        },
+
+        async fetchInvoices() {
+            try {
+                const response = await fetch(`http://${ip}:${port}/invoices`);
+                if (!response.ok) {
+                    throw new Error("Error al obtener facturas");
+                }
+                this.invoices = await response.json();
+            } catch (error) {
+                console.error('Error al obtener facturas:', error);
+            }
+        },
+        async fetchLastInvoiceNumber() {
+            try {
+                const response = await fetch(`http://${ip}:${port}/lastInvoiceNumber`);
+                if (!response.ok) {
+                    throw new Error("Error al obtener el último número de factura");
+                }
+                const result = await response.json();
+                this.invoiceNumber = result.lastInvoiceNumber + 1; // Establecer el próximo número de factura
+            } catch (error) {
+                console.error('Error al obtener el último número de factura:', error);
+            }
+        },
+
+        selectProduct(product) {
+            this.selectedProduct = product;
+            this.productSearch = product.NOMBRE; 
+        },
+
+        addItem() {
+            if (!this.selectedProduct) {
+                alert("Por favor selecciona un producto.");
+                return;
+            }
+
+            this.items.push({
+                id: this.selectedProduct.ID_PRODUCTO,
+                name: this.selectedProduct.NOMBRE,
+                lote: this.selectedProduct.ID_LOTE,
+                unitPrice: parseFloat(this.selectedProduct.VALOR_UNITARIO),
+                quantity: this.quantity,
+                totalPrice: this.quantity * parseFloat(this.selectedProduct.VALOR_UNITARIO),
+                
+            });
+
+            this.selectedProduct = null;
+            this.quantity = 1;
+        },
+
+        removeItem(index) {
+            this.items.splice(index, 1);
+        },
+
+        async generateInvoice() {
+            const invoiceData = {
+                invoiceNumber: this.invoiceNumber,
+                id_customer: this.id_customer,  // Usa id_customer
+                date: this.date,
+                items: this.items,
+                subtotal: this.subtotal,
+                paymentMethod: this.paymentMethod,
+                employee: this.id_employee 
+            };
+        
+            try {
+                const response = await fetch(`http://${ip}:${port}/createInvoices`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(invoiceData)
+                });
+                if (!response.ok) {
+                    throw new Error("Error al generar la factura");
+                }
+                this.invoiceGenerated = true;
+                this.clearInvoiceForm(); 
+                this.fetchInvoices(); 
+            } catch (error) {
+                console.error('Error al generar la factura:', error);
+            }
+        },
+
+        clearInvoiceForm() {
+            this.invoiceNumber = '';
+            this.customerName = '';
+            this.email = '';
+            this.address = '';
+            this.date = '';
+            this.items = [];
+            this.invoiceGenerated = false;
+            this.paymentMethod = '';
+            this.id_employee = ''; // Limpiar el ID del empleado
+            this.document = '';          // Limpiar nuevo campo
+            this.documentType = '';      // Limpiar nuevo campo
+            this.gender = '';            // Limpiar nuevo campo
+            this.phone = '';     
+       // Limpiar nuevo campo
+        },
+
+        editInvoice(invoice) {
+            this.editingInvoice = { ...invoice }; 
+        },
+
+        async updateInvoice() {
+            try {
+                const response = await fetch(`http://${ip}:${port}/invoices/${this.editingInvoice.ID_FACTURA}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.editingInvoice)
+                });
+                if (!response.ok) {
+                    throw new Error("Error al actualizar la factura");
+                }
+                this.editingInvoice = null; 
+                this.fetchInvoices(); 
+            } catch (error) {
+                console.error('Error al actualizar la factura:', error);
+            }
+        },
+
+        async deleteInvoice(id) {
+            console.log('Eliminando factura con ID:', id);
+            try {
+                const response = await fetch(`http://${ip}:${port}/delete/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) {
+                    throw new Error("Error al eliminar la factura");
+                }
+                this.fetchInvoices(); 
+            } catch (error) {
+                console.error('Error al eliminar la factura:', error);
+            }
+        },
+
+        selectCustomer(customer) {
+            this.customerName = customer.NOMBRES + " " + customer.APELLIDOS; // Mostrar nombre completo
+            this.id_customer = customer.ID_PERSONA; // Asigna el ID del cliente
+        },
+        formatDate(dateString) {
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            return new Date(dateString).toLocaleDateString('es-ES', options);
+        },
+    },
+    mounted() {
+        this.fetchProducts();
+        this.fetchEmployees();
+        this.fetchInvoices();
+        this.fetchLastInvoiceNumber();
+        this.fetchCustomers(); 
+    }
+}).mount('#app');
