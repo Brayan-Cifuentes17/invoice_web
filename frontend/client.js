@@ -186,8 +186,8 @@ createApp({
         if (!response.ok) {
           throw new Error("Error al generar la factura");
         }
-        const result = await response.json(); // Obtén la respuesta del servidor
-        alert(result.message); // Muestra un mensaje de éxito
+        const result = await response.json(); 
+        alert(result.message); 
         this.clearInvoiceForm();
         this.fetchInvoices();
       } catch (error) {
@@ -245,9 +245,9 @@ createApp({
           }
           const data = await response.json();
           
-          // Aquí asignamos el resto de la información de la factura (datos del cliente, etc.)
+  
           this.viewingInvoice = {
-            ...data[0], // Copiamos las propiedades del objeto recibido
+            ...data[0], 
             detalles: data.map(item => ({
               ID_PRODUCTO: item.ID_PRODUCTO,
               NOMBRE: item.NOMBRE,
@@ -263,7 +263,6 @@ createApp({
       },
 
     async deleteInvoice(id) {
-      console.log("Eliminando factura con ID:", id);
       try {
         const response = await fetch(`http://${ip}:${port}/delete/${id}`, {
           method: "DELETE",
@@ -271,6 +270,8 @@ createApp({
         if (!response.ok) {
           throw new Error("Error al eliminar la factura");
         }
+        const result = await response.json(); 
+        alert(result.message); 
         this.fetchInvoices();
       } catch (error) {
         console.error("Error al eliminar la factura:", error);

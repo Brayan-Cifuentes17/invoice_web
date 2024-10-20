@@ -66,7 +66,7 @@ app.get('/invoices', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener facturas' });
     }
 });
-
+//CREA FACTURA
 app.post('/createInvoices', async (req, res) => {
     console.log('Datos recibidos:', req.body);
     const { invoiceNumber, id_customer, date, items, subtotal,paymentMethod, employee } = req.body;
@@ -154,11 +154,10 @@ app.put('/update/:id', async (req, res) => {
 // Eliminar factura
 app.delete('/delete/:id', async (req, res) => {
     const invoiceId = req.params.id;
-
     try {
         // Primero elimina los detalles asociados
         await new Promise((resolve, reject) => {
-            connection.query('DELETE FROM detalle_factura WHERE FACTURA = ?', [invoiceId], (err) => {
+            connection.query('DELETE FROM detalle_factura WHERE ID_FACTURA = ?', [invoiceId], (err) => {
                 if (err) return reject(err);
                 resolve();
             });
@@ -170,6 +169,7 @@ app.delete('/delete/:id', async (req, res) => {
                 return res.status(500).json({ error: err.message });
             }
             res.json({ message: 'Factura eliminada con éxito' });
+            console.log()
         });
     } catch (error) {
         console.error('Error al eliminar la factura:', error);
