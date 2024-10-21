@@ -30,6 +30,19 @@ createApp({
       selectedCustomer: null, // Cliente seleccionado
       customers: [],
       invoiceSearch: "",
+      newUser: {
+        id_persona:"",
+        tipo_documento: "",
+        nombres: "",
+        apellidos: "",
+        correo: "",
+        genero: "",
+        direccion: "",
+        telefono: "",
+        login: "",
+        clave: "",
+        tipo: "",
+      },
     };
   },
   computed: {
@@ -186,8 +199,8 @@ createApp({
         if (!response.ok) {
           throw new Error("Error al generar la factura");
         }
-        const result = await response.json(); 
-        alert(result.message); 
+        const result = await response.json();
+        alert(result.message);
         this.clearInvoiceForm();
         this.fetchInvoices();
       } catch (error) {
@@ -238,29 +251,30 @@ createApp({
 
     // Método para ver la factura seleccionada
     async viewInvoice(invoice) {
-        try {
-          const response = await fetch(`http://${ip}:${port}/viewInvoice/${invoice.ID_FACTURA}`);
-          if (!response.ok) {
-            throw new Error("Error al obtener los detalles de la factura");
-          }
-          const data = await response.json();
-          
-  
-          this.viewingInvoice = {
-            ...data[0], 
-            detalles: data.map(item => ({
-              ID_PRODUCTO: item.ID_PRODUCTO,
-              NOMBRE: item.NOMBRE,
-              CANTIDAD: item.CANTIDAD,
-              SUB_TOTAL: item.SUB_TOTAL,
-              IVA: item.IVA,
-              TOTAL_PAGAR: item.TOTAL_PAGAR
-            }))
-          };
-        } catch (error) {
-          console.error('Error al obtener los detalles de la factura:', error);
+      try {
+        const response = await fetch(
+          `http://${ip}:${port}/viewInvoice/${invoice.ID_FACTURA}`
+        );
+        if (!response.ok) {
+          throw new Error("Error al obtener los detalles de la factura");
         }
-      },
+        const data = await response.json();
+
+        this.viewingInvoice = {
+          ...data[0],
+          detalles: data.map((item) => ({
+            ID_PRODUCTO: item.ID_PRODUCTO,
+            NOMBRE: item.NOMBRE,
+            CANTIDAD: item.CANTIDAD,
+            SUB_TOTAL: item.SUB_TOTAL,
+            IVA: item.IVA,
+            TOTAL_PAGAR: item.TOTAL_PAGAR,
+          })),
+        };
+      } catch (error) {
+        console.error("Error al obtener los detalles de la factura:", error);
+      }
+    },
 
     async deleteInvoice(id) {
       try {
@@ -270,17 +284,62 @@ createApp({
         if (!response.ok) {
           throw new Error("Error al eliminar la factura");
         }
-        const result = await response.json(); 
-        alert(result.message); 
+        const result = await response.json();
+        alert(result.message);
         this.fetchInvoices();
       } catch (error) {
         console.error("Error al eliminar la factura:", error);
       }
     },
+    openNewUserTab() {
+      window.open("new_user.html", "_blank"); // Abrir la nueva pestaña
+    },
 
     formatDate(dateString) {
       const options = { year: "numeric", month: "2-digit", day: "2-digit" };
       return new Date(dateString).toLocaleDateString("es-ES", options);
+    },
+    async createUser() {
+      const newUserData = {
+        id_persona:this.newUser.id_persona,
+        tipo_documento: this.newUser.tipo_documento,
+        nombres: this.newUser.nombres,
+        apellidos: this.newUser.apellidos,
+        correo: this.newUser.correo,
+        genero: this.newUser.genero,
+        direccion: this.newUser.direccion,
+        telefono: this.newUser.telefono,
+        login: this.newUser.login,
+        clave: this.newUser.clave,
+        tipo: this.newUser.tipo,
+      };
+
+      try {
+        const response = await fetch(`http://${ip}:${port}/createUser`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUserData),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message);
+        }
+
+        const result = await response.json();
+        alert(result.message);
+
+        if (window.opener) {
+          window.opener.location.reload();
+      }
+        window.close(); 
+      } catch (error) {
+        console.error("Error al registrar el usuario:", error);
+        alert(error.message);
+        window.close(); 
+      }
     },
   },
   mounted() {

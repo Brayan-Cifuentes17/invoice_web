@@ -10,9 +10,9 @@
   </head>
   <body>
     <div id="app">
+      <button @click="openNewUserTab">Registrar Nuevo Usuario</button>
       <h1>Generar Factura</h1>
-
-      <!-- Formulario para ingresar detalles de la factura -->
+    
       <form @submit.prevent="generateInvoice">
         <div>
           <label for="invoiceNumber">Número de Factura:</label>
@@ -168,7 +168,7 @@
             <td>{{ formatDate(invoice.FECHA) }}</td>
             <td>
               <button @click="viewInvoice(invoice)">Ver</button>
-              <button @click="editInvoice(invoice)">Editar</button>
+              <button @click="editInvoice(viewingInvoice)">Editar</button>
               <button @click="deleteInvoice(invoice.ID_FACTURA)">Eliminar</button>
             </td>
           </tr>

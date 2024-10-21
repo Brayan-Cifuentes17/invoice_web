@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registrar Nuevo Usuario</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <h1>Registrar Nuevo Usuario</h1>
+
+      <form @submit.prevent="createUser">
+        <div>
+          <label for="id_persona">Numero Documento:</label>
+          <input type="text" v-model="newUser.id_persona" required />
+
+          <label for="tipo_documento">Tipo de Documento:</label>
+          <select v-model="newUser.tipo_documento" required>
+            <option value="CC">Cedula Nacional</option>
+            <option value="CE">Cedula extranjera</option>
+            <option value="PA">Pasaporte</option>
+            <option value="LC">Licencia de conducir</option>
+          </select>
+
+          <label for="nombres">Nombres:</label>
+          <input type="text" v-model="newUser.nombres" required />
+
+          <label for="apellidos">Apellidos:</label>
+          <input type="text" v-model="newUser.apellidos" required />
+
+          <label for="correo">Correo Electrónico:</label>
+          <input type="email" v-model="newUser.correo" required />
+
+          <label for="genero">Genero</label>
+          <select v-model="newUser.genero" required>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+            <option value="O">Otro</option>
+          </select>
+          <label for="direccion">Dirección:</label>
+          <input type="text" v-model="newUser.direccion" required />
+
+          <label for="telefono">Teléfono:</label>
+          <input type="text" v-model="newUser.telefono" required />
+        </div>
+
+        <div>
+          <h2>Datos del Usuario</h2>
+
+          <label for="login">Login:</label>
+          <input type="text" v-model="newUser.login" required />
+
+          <label for="clave">Clave:</label>
+          <input type="password" v-model="newUser.clave" required />
+
+          <label for="tipo">Tipo de Usuario:</label>
+          <select v-model="newUser.tipo" required>
+            <option value="CLI">Cliente</option>
+            <option value="EMP">Empleado</option>
+          </select>
+        </div>
+
+        <button type="submit">Registrar Usuario</button>
+      </form>
+    </div>
+
+    <script src="client.js"></script>
+  </body>
+</html>
