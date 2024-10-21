@@ -125,9 +125,9 @@
         </div>
 
         <div>
-          <h3>Subtotal: {{ subtotal }}</h3>
-          <h3>IVA: {{ iva }}</h3>
-          <h3>Total a Pagar: {{ total }}</h3>
+          <h3>Subtotal:$ {{ subtotal }}</h3>
+          <h3>IVA:$ {{ iva }}</h3>
+          <h3>Total a Pagar:$ {{ total }}</h3>
 
           <label for="paymentMethod">Método de Pago:</label>
           <select v-model="paymentMethod">
@@ -189,7 +189,7 @@
 
       <div v-if="viewingInvoice">
         <h2>Detalles de la Factura</h2>
-        <p><strong>ID Factura:</strong> {{ viewingInvoice.ID_FACTURA }}</p>
+        <p><strong>ID Factura N°:</strong> {{ viewingInvoice.ID_FACTURA }}</p>
         <p>
           <strong>Cliente:</strong> {{ viewingInvoice.NOMBRES }} {{
           viewingInvoice.APELLIDOS }}
@@ -197,6 +197,7 @@
         <p><strong>Dirección:</strong> {{ viewingInvoice.DIRECCION }}</p>
         <p><strong>Email:</strong> {{ viewingInvoice.CORREO }}</p>
         <p><strong>Teléfono:</strong> {{ viewingInvoice.TELEFONO }}</p>
+        <p><strong>ID_Empleado:</strong> {{ viewingInvoice.ID_VENDEDOR }}</p>
         <p>
           <strong>Fecha de Venta:</strong> {{ formatDate(viewingInvoice.FECHA)
           }}
@@ -210,7 +211,7 @@
               <th>Nombre Producto</th>
               <th>Cantidad</th>
               <th>Subtotal</th>
-              <th>IVA</th>
+              <th>Precio + IVA</th>
             </tr>
           </thead>
           <tbody>
@@ -228,7 +229,7 @@
         </table>
 
         <p><strong>Método de Pago:</strong> {{ viewingInvoice.METODO_PAGO }}</p>
-        <p><strong>Total a pagar:</strong> {{ viewingInvoice.TOTAL_PAGAR }}</p>
+        <p><strong>Total a pagar: $</strong> {{ viewingInvoice.TOTAL_PAGAR }}</p>
       </div>
 
 

@@ -98,9 +98,9 @@ createApp({
       this.address = customer.DIRECCION; // Asigna la dirección del cliente
       this.email = customer.CORREO; // Asigna el email del cliente
       this.phone = customer.TELEFONO; // Asigna el teléfono del cliente
-      this.customerSearch = ""; // Limpia el campo de búsqueda
+      this.customerSearch =  customer.ID_PERSONA; // Limpia el campo de búsqueda
     },
-    async fetchProducts() {
+    async fetchProducts() { 
       try {
         const response = await fetch(`http://${ip}:${port}/products`);
         if (!response.ok) {
@@ -203,6 +203,7 @@ createApp({
         alert(result.message);
         this.clearInvoiceForm();
         this.fetchInvoices();
+        window.location.reload();
       } catch (error) {
         console.error("Error al generar la factura:", error);
       }
@@ -266,6 +267,7 @@ createApp({
             ID_PRODUCTO: item.ID_PRODUCTO,
             NOMBRE: item.NOMBRE,
             CANTIDAD: item.CANTIDAD,
+            ID_VENDEDOR:item.ID_VENDEDOR,
             SUB_TOTAL: item.SUB_TOTAL,
             IVA: item.IVA,
             TOTAL_PAGAR: item.TOTAL_PAGAR,
@@ -287,6 +289,7 @@ createApp({
         const result = await response.json();
         alert(result.message);
         this.fetchInvoices();
+        window.location.reload();
       } catch (error) {
         console.error("Error al eliminar la factura:", error);
       }

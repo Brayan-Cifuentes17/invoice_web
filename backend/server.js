@@ -47,7 +47,7 @@ app.get("/employees", async (req, res) => {
 app.get("/customers", async (req, res) => {
   try {
     connection.query(
-      'SELECT U.TIPO,P.* FROM USUARIO U JOIN PERSONA P ON U.id_PERSONA = P.id_persona WHERE U.TIPO="CLI";',
+      'SELECT U.TIPO,P.* FROM USUARIO U JOIN PERSONA P ON U.id_PERSONA = P.id_persona;',
       (err, results) => {
         if (err) {
           return res.status(500).json({ error: err.message });
