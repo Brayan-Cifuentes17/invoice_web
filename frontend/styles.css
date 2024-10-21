@@ -206,7 +206,7 @@ th {
 }
 
 th {
-  background-color: #007BFF;
+  background-color: #13293d;
   color: white;
 }
 
@@ -241,7 +241,7 @@ h2 + div {
   margin-top: 20px;
   padding: 10px;
   background-color: #e7f1ff;
-  border: 1px solid #007BFF;
+  border: 1px solid #4593fc;
   border-radius: 4px;
 
 }
