@@ -168,7 +168,6 @@
             <td>{{ formatDate(invoice.FECHA) }}</td>
             <td>
               <button @click="viewInvoice(invoice)">Ver</button>
-              <button @click="editInvoice(viewingInvoice)">Editar</button>
               <button @click="deleteInvoice(invoice.ID_FACTURA)">Eliminar</button>
             </td>
           </tr>
@@ -188,7 +187,7 @@
         <p>
           <strong>Fecha de Venta:</strong> {{ formatDate(viewingInvoice.FECHA)
           }}
-        </p>
+        </p> 
 
         <h3>Productos</h3>
         <table>
@@ -218,26 +217,6 @@
         <p><strong>Método de Pago:</strong> {{ viewingInvoice.METODO_PAGO }}</p>
         <p><strong>Total a pagar:</strong> {{ viewingInvoice.TOTAL_PAGAR }}</p>
       </div>
-
-      <!-- Formulario para editar factura -->
-      <div v-if="editingInvoice">
-        <h2>Editar Factura</h2>
-        <form @submit.prevent="updateInvoice">
-          <label for="editInvoiceNumber">Número de Factura:</label>
-          <input type="text" v-model="editingInvoice.ID_FACTURA" disabled />
-
-          <label for="editCustomerName">Id del Cliente:</label>
-          <input type="text" v-model="editingInvoice.CLIENTE" required />
-
-          <label for="editEmployeeName">Id del Empleado:</label>
-          <input type="text" v-model="editingInvoice.EMLEADO" required />
-
-          <label for="editDate">Fecha:</label>
-          <input type="date" v-model="editingInvoice.FECHA" required />
-          <button type="submit">Actualizar Factura</button>
-        </form>
-      </div>
-    </div>
 
     <script src="client.js"></script>
   </body>
