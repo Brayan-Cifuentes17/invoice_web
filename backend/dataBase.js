@@ -5,7 +5,7 @@ const connection = mysql.createConnection({
 
     host:'localhost',
     user:'root',
-    password:'211100',
+    password:'9896d',
     database:'bdinvoice'
 });
 

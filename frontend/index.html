@@ -1,223 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Factura - Sistema de Gestión</title>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link rel="stylesheet" href="styles.css" />
-    
-  </head>
-  <body>
-    <div id="app">
-      <button @click="openNewUserTab">Registrar Nuevo Usuario</button>
-      <h1>Generar Factura</h1>
-    
-      <form @submit.prevent="generateInvoice">
-        <div>
-          <label for="invoiceNumber">Número de Factura:</label>
-          <input type="text" v-model="invoiceNumber" disabled />
 
-          <label for="customerSearch">Buscar Cliente por ID:</label>
-          <input
-            type="text"
-            v-model="customerSearch"
-            placeholder="Escriba el ID del cliente..."
-          />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Factura - Sistema de Gestión</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="stylesIndex.css" />
 
-          <ul v-if="customerSearch && filteredCustomers.length">
-            <li
-              v-for="customer in filteredCustomers"
-              :key="customer.ID_PERSONA"
-              @click="selectCustomer(customer)"
-            >
-              ID: {{ customer.ID_PERSONA }} - Nombre: {{ customer.NOMBRES }} {{
-              customer.APELLIDOS }}-CONTACTO:{{ customer.TELEFONO}}
-            </li>
-          </ul>
+</head>
 
-          <label for="customerName">Nombre del Cliente:</label>
-          <input type="text" v-model="customerName" disabled />
+<body>
+  <header class="header">
+    <div class="logo">
+      <img src="../frontend/img/Mountain.png" alt="Logo de la marca">
+    </div>
 
-          <label for="id_customer">Documento:</label>
-          <input type="text" v-model="id_customer" disabled />
+    <nav>
+      <ul class="nav-links">
+        <li class="factura"><a href="factura.html">Generar Factura</a></li>
+        <li class="producto"><a href="producto.html">Productos</a></li>
+      </ul>
+    </nav>
+    <a class="btn" href="#"><button>Ingresar</button></a>
+  </header>
+  
+  <div class="headerContentContainer">
+    <h1>Café Colombiano</h1>
+    <p>Colombia es mundialmente reconocida por producir uno de los 
+      cafés más apreciados. Su sabor suave, aroma intenso y cuerpo equilibrado 
+      lo han posicionado como un referente en la industria cafetera.
+      El sabor y el aroma que distinguen una taza de café colombiano de otros cafés se debe al metódico trabajo de los cafetaleros. Empezando por el cultivo de las semillas, pasando por la cosecha para elegir los granos en su punto de maduración hasta el procesamiento 
+      de los granos de café: secado, tueste y envasado.
+    </p>
+    <a href="#" class="btn-1">Informacion</a>
+  </div>
 
-          <label for="customerAddress">Dirección del Cliente:</label>
-          <input type="text" v-model="address" disabled />
+  <section class="coffe">
 
-          <label for="customerEmail">Email del Cliente:</label>
-          <input type="email" v-model="email" disabled />
+    <img class="coffe-img" src="../frontend/img/bg2.png" alt="">
 
-          <label for="customerPhone">Teléfono del Cliente:</label>
-          <input type="text" v-model="phone" disabled />
-
-          <label for="date">Fecha de Venta:</label>
-          <input type="date" v-model="date" required />
+   <div class="coffe-content container">
+      <h2>Los diferentes tipos de Café </h2>
+      <p class="txt-p">
+        Aunque todos los cafés colombianos comparten características
+        comunes, existen diversas variedades y regiones 
+        productoras que ofrecen perfiles de sabor únicos.
+        
+      </p>
+      <div class="coffe-group">
+       <div class="coffe-1">
+          <img src="../frontend/img/c1.png" alt="">
+          <h5>Café Excelso</h5>
+          <p>
+            Cultivado en una amplia variedad de regiones cafeteras, pero siempre en condiciones 
+            óptimas para la producción de café de alta calidad
+            Ofrece un sabor suave y equilibrado, con una acidez ligera y un cuerpo medio. Es un café muy versátil 
+            que se adapta a diferentes métodos de preparación.
+          </p>
         </div>
 
-        <div>
-          <h2>Productos</h2>
-          <label for="productSearch">Buscar Producto:</label>
-          <input
-            type="text"
-            v-model="productSearch"
-            placeholder="Escriba para buscar..."
-          />
+        <div class="coffe-1">
+         <img src="../frontend/img/c2.png" alt="">
+         <h5>Café Caturra</h5>
+         <p>
+          Mutación natural de la variedad Typica, originaria de Brasil. Sin embargo, Colombia ha logrado adaptar esta variedad a sus condiciones 
+          climáticas y producir cafés de excelente calidad.
+          Su grano es más pequeño y redondeado que el de la Typica, lo que le confiere un sabor más intenso y complejo. Destaca por sus notas frutales, 
+          como cítricos y berries, y una acidez brillante.
+         </p>
+        </div>
 
-          <ul v-if="productSearch && filteredProducts.length">
-            <li
-              v-for="product in filteredProducts"
-              :key="product.ID_PRODUCTO"
-              @click="selectProduct(product)"
-            >
-              ID: {{ product.ID_PRODUCTO }} - Nombre: {{ product.NOMBRE }} -
-              Valor: {{ product.VALOR_UNITARIO }} - Cantidad disponible: {{
-              product.CANTIDAD }}- Lote: {{product.ID_LOTE }}
-            </li>
-          </ul>
+       <div class="coffe-1">
+         <img src="../frontend/img/c3.png" alt="">
+          <h5>Café Supremo</h5>
+          <p>
+            Cultivado en las zonas más altas de las regiones cafeteras colombianas, como el Eje Cafetero, donde las condiciones
+           climáticas son más frías y las noches más largas.
+           Su grano es de alta densidad y produce una taza con un sabor complejo y aromático, a menudo con notas de chocolate, caramelo y frutos secos.
+            La acidez es equilibrada y el cuerpo es robusto.
+         </p>
+       </div>
+      </div>
+      <a href="#" class="btn-1">Informacion</a>
+    </div>
+  </section>
 
-          <div v-if="selectedProduct">
-            <p>
-              Producto seleccionado: {{ selectedProduct.NOMBRE }} ({{
-              selectedProduct.UNIDAD_MEDIDA }})
-            </p>
-            <label for="quantity">Cantidad:</label>
-            <input type="number" v-model="quantity" min="1" required />
-            <button @click="addItem" type="button">Agregar Producto</button>
+  <main class="services">
+    <div class="services-content container">
+      <h2>Productos</h2>
+        <div class="services-group">
+          <div class="services1">
+            <img src="../frontend/img/moto.png" alt="">
+            <h2>Domicilios</h2>
+          </div>
+          <div class="services1">
+            <img src="../frontend/img/atencion.png" alt="">
+            <h2>Atencion Cliente</h2>
+          </div>
+          <div class="services1">
+            <img src="../frontend/img/tienda.png" alt="">
+            <h2>Sobre Nosotros</h2>
           </div>
         </div>
+    </div>
+  </main>
 
-        <div>
-          <h2>Lista de Productos</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio Unitario</th>
-                <th>Total</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in items" :key="index">
-                <td>{{ item.name }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.unitPrice }}</td>
-                <td>{{ item.totalPrice }}</td>
-                <td><button @click="removeItem(index)">Eliminar</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  <section class="general">
+    <div class="general-1">
+      <h2> Descuentos</h2>
+      <p>
+        Aprovecha los descuentos 
+      </p>
+      <a href="#"  class="btn-1"></a>
+    </div>
+    <div class="general-2"></div>
+  </section>
 
-        <div>
-          <h3>Subtotal: {{ subtotal }}</h3>
-          <h3>IVA: {{ iva }}</h3>
-          <h3>Total a Pagar: {{ total }}</h3>
+  <section class="general">
+    <div class="general-3"></div>
 
-          <label for="paymentMethod">Método de Pago:</label>
-          <select v-model="paymentMethod">
-            <option value="EFC">Efectivo</option>
-            <option value="TDC">Tarjeta de Crédito</option>
-            <option value="TDD">Tarjeta de Débito</option>
-            <option value="TRS">Transferencia</option>
-            <option value="NEQ">Nequi</option>
-          </select>
+    <div class="general-1">
+      <h2> Descuentos</h2>
+      <p>
+        Aprovecha los descuentos 
+      </p>
+      <a href="#"  class="btn-1"></a>
+    </div>
+  </section>
 
-          <label for="employee">Empleado:</label>
-          <select v-model="id_employee">
-            <option
-              v-for="employee in employees"
-              :key="employee.ID_PERSONA"
-              :value="employee.ID_PERSONA"
-            >
-              {{ employee.ID_PERSONA }}-{{ employee.NOMBRES }} {{
-              employee.APELLIDOS }}
-            </option>
-          </select>
 
-          <button type="submit">Generar Factura</button>
-        </div>
-      </form>
+  <script src="client.js"></script>
+</body>
 
-      <!-- Mensaje cuando se genera la factura -->
-
-      <!-- Sección para mostrar facturas existentes -->
-      <h2>Facturas Existentes</h2>
-      <label for="invoiceSearch">Buscar Factura por ID:</label>
-      <input
-        type="text"
-        v-model="invoiceSearch"
-        placeholder="Escriba el ID de la factura..."
-      />
-
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Fecha</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="invoice in filteredInvoices" :key="invoice.ID_FACTURA">
-            <td>{{ invoice.ID_FACTURA }}</td>
-            <td>{{ invoice.ID_CLIENTE }}</td>
-            <td>{{ formatDate(invoice.FECHA) }}</td>
-            <td>
-              <button @click="viewInvoice(invoice)">Ver</button>
-              <button @click="deleteInvoice(invoice.ID_FACTURA)">Eliminar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div v-if="viewingInvoice">
-        <h2>Detalles de la Factura</h2>
-        <p><strong>ID Factura:</strong> {{ viewingInvoice.ID_FACTURA }}</p>
-        <p>
-          <strong>Cliente:</strong> {{ viewingInvoice.NOMBRES }} {{
-          viewingInvoice.APELLIDOS }}
-        </p>
-        <p><strong>Dirección:</strong> {{ viewingInvoice.DIRECCION }}</p>
-        <p><strong>Email:</strong> {{ viewingInvoice.CORREO }}</p>
-        <p><strong>Teléfono:</strong> {{ viewingInvoice.TELEFONO }}</p>
-        <p>
-          <strong>Fecha de Venta:</strong> {{ formatDate(viewingInvoice.FECHA)
-          }}
-        </p> 
-
-        <h3>Productos</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>ID Producto</th>
-              <th>Nombre Producto</th>
-              <th>Cantidad</th>
-              <th>Subtotal</th>
-              <th>IVA</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="detalle in viewingInvoice.detalles"
-              :key="detalle.ID_PRODUCTO"
-            >
-              <td>{{ detalle.ID_PRODUCTO }}</td>
-              <td>{{ detalle.NOMBRE }}</td>
-              <td>{{ detalle.CANTIDAD }}</td>
-              <td>{{ detalle.SUB_TOTAL }}</td>
-              <td>{{ detalle.IVA }}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p><strong>Método de Pago:</strong> {{ viewingInvoice.METODO_PAGO }}</p>
-        <p><strong>Total a pagar:</strong> {{ viewingInvoice.TOTAL_PAGAR }}</p>
-      </div>
-
-    <script src="client.js"></script>
-  </body>
 </html>

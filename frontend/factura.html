@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Factura - Sistema de Gestión</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo">
+        <img src="../frontend/img/Mountain.png" alt="Logo de la marca">
+      </div>
+      <nav>
+         <ul class="nav-links">
+              <li class="factura"><a href="factura.html">Generar Factura</a></li>
+              <li class="producto"><a href="producto.html">Productos</a></li>
+         </ul>            
+      </nav>
+      <a class="btn" href="#"><button>Ingresar</button></a>
+    </header>
+    <div id="app">
+      <button @click="openNewUserTab">Registrar Nuevo Usuario</button>
+      <h1>Generar Factura</h1>
+
+      <!-- Formulario para ingresar detalles de la factura -->
+      <form @submit.prevent="generateInvoice">
+        <div>
+          <label for="invoiceNumber">Número de Factura:</label>
+          <input type="text" v-model="invoiceNumber" disabled />
+
+          <label for="customerSearch">Buscar Cliente por ID:</label>
+          <input
+            type="text"
+            v-model="customerSearch"
+            placeholder="Escriba el ID del cliente..."
+          />
+
+          <ul v-if="customerSearch && filteredCustomers.length">
+            <li
+              v-for="customer in filteredCustomers"
+              :key="customer.ID_PERSONA"
+              @click="selectCustomer(customer)"
+            >
+              ID: {{ customer.ID_PERSONA }} - Nombre: {{ customer.NOMBRES }} {{
+              customer.APELLIDOS }}-CONTACTO:{{ customer.TELEFONO}}
+            </li>
+          </ul>
+
+          <label for="customerName">Nombre del Cliente:</label>
+          <input type="text" v-model="customerName" disabled />
+
+          <label for="id_customer">Documento:</label>
+          <input type="text" v-model="id_customer" disabled />
+
+          <label for="customerAddress">Dirección del Cliente:</label>
+          <input type="text" v-model="address" disabled />
+
+          <label for="customerEmail">Email del Cliente:</label>
+          <input type="email" v-model="email" disabled />
+
+          <label for="customerPhone">Teléfono del Cliente:</label>
+          <input type="text" v-model="phone" disabled />
+
+          <label for="date">Fecha de Venta:</label>
+          <input type="date" v-model="date" required />
+        </div>
+
+        <div>
+          <h2>Productos</h2>
+          <label for="productSearch">Buscar Producto:</label>
+          <input
+            type="text"
+            v-model="productSearch"
+            placeholder="ingrese el Producto..."
+          />
+
+          <ul v-if="productSearch && filteredProducts.length">
+            <li
+              v-for="product in filteredProducts"
+              :key="product.ID_PRODUCTO"
+              @click="selectProduct(product)"
+            >
+              ID: {{ product.ID_PRODUCTO }} - Nombre: {{ product.NOMBRE }} -
+              Valor: {{ product.VALOR_UNITARIO }} - Cantidad disponible: {{
+              product.CANTIDAD }}- Lote: {{product.ID_LOTE }}
+            </li>
+          </ul>
+
+          <div v-if="selectedProduct">
+            <p>
+              Producto seleccionado: {{ selectedProduct.NOMBRE }} ({{
+              selectedProduct.UNIDAD_MEDIDA }})
+            </p>
+            <label for="quantity">Cantidad:</label>
+            <input type="number" v-model="quantity" min="1" required />
+            <button @click="addItem" type="button">Agregar Producto</button>
+          </div>
+        </div>
+
+        <div>
+          <h2>Lista de Productos</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Total</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in items" :key="index">
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.unitPrice }}</td>
+                <td>{{ item.totalPrice }}</td>
+                <td><button @click="removeItem(index)">Eliminar</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h3>Subtotal: {{ subtotal }}</h3>
+          <h3>IVA: {{ iva }}</h3>
+          <h3>Total a Pagar: {{ total }}</h3>
+
+          <label for="paymentMethod">Método de Pago:</label>
+          <select v-model="paymentMethod">
+            <option value="EFC">Efectivo</option>
+            <option value="TDC">Tarjeta de Crédito</option>
+            <option value="TDD">Tarjeta de Débito</option>
+            <option value="TRS">Transferencia</option>
+            <option value="NEQ">Nequi</option>
+          </select>
+
+          <label for="employee">Empleado:</label>
+          <select v-model="id_employee">
+            <option
+              v-for="employee in employees"
+              :key="employee.ID_PERSONA"
+              :value="employee.ID_PERSONA"
+            >
+              {{ employee.ID_PERSONA }}-{{ employee.NOMBRES }} {{
+              employee.APELLIDOS }}
+            </option>
+          </select>
+
+          <button type="submit">Generar Factura</button>
+        </div>
+      </form>
+
+      <!-- Mensaje cuando se genera la factura -->
+
+      <!-- Sección para mostrar facturas existentes -->
+      <h2>Facturas Existentes</h2>
+      <label for="invoiceSearch">Buscar Factura por ID:</label>
+      <input
+        type="text"
+        v-model="invoiceSearch"
+        placeholder="Escriba el ID de la factura..."
+      />
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="invoice in filteredInvoices" :key="invoice.ID_FACTURA">
+            <td>{{ invoice.ID_FACTURA }}</td>
+            <td>{{ invoice.ID_CLIENTE }}</td>
+            <td>{{ formatDate(invoice.FECHA) }}</td>
+            <td>
+              <button @click="viewInvoice(invoice)">Ver</button>
+              <button @click="editInvoice(invoice)">Editar</button>
+              <button @click="deleteInvoice(invoice.ID_FACTURA)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div v-if="viewingInvoice">
+        <h2>Detalles de la Factura</h2>
+        <p><strong>ID Factura:</strong> {{ viewingInvoice.ID_FACTURA }}</p>
+        <p>
+          <strong>Cliente:</strong> {{ viewingInvoice.NOMBRES }} {{
+          viewingInvoice.APELLIDOS }}
+        </p>
+        <p><strong>Dirección:</strong> {{ viewingInvoice.DIRECCION }}</p>
+        <p><strong>Email:</strong> {{ viewingInvoice.CORREO }}</p>
+        <p><strong>Teléfono:</strong> {{ viewingInvoice.TELEFONO }}</p>
+        <p>
+          <strong>Fecha de Venta:</strong> {{ formatDate(viewingInvoice.FECHA)
+          }}
+        </p>
+
+        <h3>Productos</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID Producto</th>
+              <th>Nombre Producto</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+              <th>IVA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="detalle in viewingInvoice.detalles"
+              :key="detalle.ID_PRODUCTO"
+            >
+              <td>{{ detalle.ID_PRODUCTO }}</td>
+              <td>{{ detalle.NOMBRE }}</td>
+              <td>{{ detalle.CANTIDAD }}</td>
+              <td>{{ detalle.SUB_TOTAL }}</td>
+              <td>{{ detalle.IVA }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Método de Pago:</strong> {{ viewingInvoice.METODO_PAGO }}</p>
+        <p><strong>Total a pagar:</strong> {{ viewingInvoice.TOTAL_PAGAR }}</p>
+      </div>
+
+      <!-- Formulario para editar factura -->
+      <div v-if="editingInvoice">
+        <h2>Editar Factura</h2>
+        <form @submit.prevent="updateInvoice">
+          <label for="editInvoiceNumber">Número de Factura:</label>
+          <input type="text" v-model="editingInvoice.ID_FACTURA" disabled />
+
+          <label for="editCustomerName">Id del Cliente:</label>
+          <input type="text" v-model="editingInvoice.CLIENTE" required />
+
+          <label for="editEmployeeName">Id del Empleado:</label>
+          <input type="text" v-model="editingInvoice.EMLEADO" required />
+
+          <label for="editDate">Fecha:</label>
+          <input type="date" v-model="editingInvoice.FECHA" required />
+          <button type="submit">Actualizar Factura</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="client.js"></script>
+  </body>
+</html>
+
