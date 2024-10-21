@@ -9,18 +9,18 @@
     
   </head>
   <body>
-    <header class="header">
-      <div class="logo">
-        <img src="../frontend/img/Mountain.png" alt="Logo de la marca">
-      </div>
-      <nav>
-         <ul class="nav-links">
-              <li class="factura"><a href="factura.html">Generar Factura</a></li>
-              <li class="producto"><a href="producto.html">Productos</a></li>
-         </ul>            
-      </nav>
-      <a class="btn" href="#"><button>Ingresar</button></a>
-    </header>
+  <header class="header">
+    <div class="logo">
+      <li ><a href="index.html"><img src="../frontend/img/Mountain.png" alt="Logo de la marca"></a></li>    </div>
+    <nav>
+      <ul class="nav-links">
+        <li class="factura"><a href="factura.html">Generar Factura</a></li>
+        <li class="producto"><a href="producto.html">Productos</a></li>
+        <li class="new-user"><a href="new_user.html">Nuevo Usuario</a> </li>
+      </ul>
+    </nav>
+    <a class="btn" href="#"><button>Ingresar</button></a>
+  </header>
     <div id="app">
       <button @click="openNewUserTab">Registrar Nuevo Usuario</button>
       <h1>Generar Factura</h1>
@@ -181,7 +181,6 @@
             <td>{{ formatDate(invoice.FECHA) }}</td>
             <td>
               <button @click="viewInvoice(invoice)">Ver</button>
-              <button @click="editInvoice(invoice)">Editar</button>
               <button @click="deleteInvoice(invoice.ID_FACTURA)">Eliminar</button>
             </td>
           </tr>
@@ -232,24 +231,7 @@
         <p><strong>Total a pagar:</strong> {{ viewingInvoice.TOTAL_PAGAR }}</p>
       </div>
 
-      <!-- Formulario para editar factura -->
-      <div v-if="editingInvoice">
-        <h2>Editar Factura</h2>
-        <form @submit.prevent="updateInvoice">
-          <label for="editInvoiceNumber">Número de Factura:</label>
-          <input type="text" v-model="editingInvoice.ID_FACTURA" disabled />
 
-          <label for="editCustomerName">Id del Cliente:</label>
-          <input type="text" v-model="editingInvoice.CLIENTE" required />
-
-          <label for="editEmployeeName">Id del Empleado:</label>
-          <input type="text" v-model="editingInvoice.EMLEADO" required />
-
-          <label for="editDate">Fecha:</label>
-          <input type="date" v-model="editingInvoice.FECHA" required />
-          <button type="submit">Actualizar Factura</button>
-        </form>
-      </div>
     </div>
 
     <script src="client.js"></script>

@@ -1,79 +1,105 @@
 /* Estilos Globales */
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    background-color: #f7d372;
-    color: #333;
-    box-sizing: border-box;
-    }
-  
-  .header{
-    background-color: #1b3039;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    height: 85px;
-    padding: 5px 10%;
-  }
-  .header .logo{
-    cursor: pointer;
-    margin-right: auto;
-  }
-  
-  .header .logo img{
-    height: 70px;
-    width: auto;
-    transition: all 0.3s;
-  }
-  
-  .header .logo img:hover{
-    transform: scale(1.2);
-  }
-  
-  .header .nav-links{
-    list-style: none;
-    display: flex; /* Use flexbox for horizontal alignment */
-    align-items: center; /* Vertically center items */  
-    background-color: #1b3039;
-    border: none;
-  
-  }
-  
-  .header .nav-links  li.factura {
-    background-color: transparent;
-    display: inline-block;
-    padding: 0 20px; 
-        
-  }
-  .header .nav-links  li.producto {
-    background-color: transparent;
-    display: inline-block;
-    padding: 0 20px;     
-  }
-  
-  .header .nav-links li.factura a{
-    transform: scale(1.1);    
-  }
-  .header .nav-links li.prudcto a{
-    transform: scale(1.1);    
-  }
-  .header .nav-links  a{
-    font-size: 700;
-    color: #fffcfc;
-    text-decoration: none;       
-  }
-  
-  .header .nav-links  li.factura a:hover{
-    color: #ffbc0e;  
-  }
-  .header .nav-links  li.producto a:hover{
-    color: #ffbc0e;   
-  }
-  
-  
-  .header .btn button{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background-color: #f7d372;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.container{
+  max-width: 1200px ;
+  margin:  0 auto;
+}
+
+.header{
+  background-color: #1b3039;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 85px;
+  padding: 5px 10%;
+}
+.header .logo{
+  cursor: pointer;
+  margin-right: auto;
+}
+
+.header .logo img{
+  height: 70px;
+  width: auto;
+  transition: all 0.3s;
+}
+
+.header .logo img:hover{
+  transform: scale(1.2);
+
+}
+
+.header .nav-links{
+  list-style: none;
+  display: flex; /* Use flexbox for horizontal alignment */
+  align-items: center; /* Vertically center items */
+  background-color: #1b3039;
+  border: none;
+}
+
+.header .nav-links  li.producto {
+  background-color: transparent;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+.header .nav-links  li.new-user {
+  background-color: transparent;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+.header .nav-links  li.factura {
+  background-color: transparent;
+  display: inline-block;
+  padding: 0 20px;
+}
+
+.header .nav-links li.factura a{
+  transform: scale(1.1);
+}
+.header .nav-links li.new-user a{
+  transform: scale(1.1);
+}
+.header .nav-links li.prudcto a{
+  transform: scale(1.1);
+}
+.header .nav-links  a{
+  font-size: 70%;
+  color: #fffcfc;
+  text-decoration: none;
+}
+
+.header .nav-links  li.factura a:hover{
+  color: #ffbc0e;
+}
+.header .nav-links  li.producto a:hover{
+  color: #ffbc0e;
+}
+.header .nav-links  li.new-user a:hover{
+  color: #ffbc0e;
+}
+
+
+
+.header .btn button{
     margin-left: 20px;
     font-weight: 700;
     color: #1b3039;
